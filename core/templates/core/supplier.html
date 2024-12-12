@@ -1,0 +1,14 @@
+{% extends "core/base.html" %} 
+
+{% block content %}
+
+<main>
+    <h1>FORNECEDORES</h1>
+    {% for supplier in suppliers %}
+        <h2><a href=""> {{ supplier }} </a></h2>
+    {% endfor %}
+</main>
+
+{% endblock content %}
+
+

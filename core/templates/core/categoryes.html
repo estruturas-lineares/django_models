@@ -1,0 +1,13 @@
+{% extends "core/base.html" %} 
+
+{% block content %}
+
+<main>
+    <h1>CATEGORIAS</h1>
+    {% for category in categoryes %}
+        <h2><a href=""> {{ category }} </a></h2>
+    {% endfor %}
+</main>
+
+{% endblock content %}
+
