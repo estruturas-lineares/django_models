@@ -6,7 +6,9 @@
    
     <H1>{{ product.name }}</H1>
     <span> {{ product.price}}</span>
-    <span> {{ product.categories }}</span>
+    {% for category in product.categories.all %}
+    <span> {{ category }}</span>
+    {% endfor %}
     <span> {{ product.supplier}}</span>
 </main>
 
