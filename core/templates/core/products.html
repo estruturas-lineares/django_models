@@ -4,7 +4,6 @@
 
 <main>
     <h1>PRODUTOS</h1>
-    <H1>{{ products }}</H1>
     {% for product in products %}
         <h2><a href="/{{product.id}}"> {{ product }} </a></h2>
     {% endfor %}
