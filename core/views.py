@@ -1,38 +1,45 @@
 from django.shortcuts import render, redirect
+from django.urls import reverse_lazy
 from .models import Product, Category, Supplier
 from .forms import ProductForm, CategoryForm, SupplierForm
 from datetime import datetime
+from django.views.generic import TemplateView, DetailView,ListView, FormView
 
 # Create your views here.
-def index (request):
-    return render(request,"core/index.html")
+class index(TemplateView):
+    template_name = 'core/index.html'
 
-def products(request):
-    products_model = Product.objects.all()
-    context = {'products': products_model}
-    return render(request, "core/products.html", context)
+class products(TemplateView):
+    template_name = 'core/products.html'
 
-def categorys(request):
-    categorys_model = Category.objects.all()
-    context = {'categoryes': categorys_model}
-    return render(request, "core/categoryes.html", context)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['products'] = Product.objects.all()
+        return context
+    
+class categorys(ListView):
+    model = Category
+    template_name = 'core/categoryes.html'
+    context_object_name = 'categoryes'
 
-def supplier(request):
-    suppliers = Supplier.objects.all()
-    context = {'suppliers': suppliers}
-    return render(request, "core/supplier.html", context)
+#user list view deps
+class supplier(ListView):
+    model = Supplier
+    template_name = 'core/supplier.html'
+    context_object_name = 'suppliers'
 
-def details(request, product_id):
-    prodcut = Product.objects.get(id = product_id)  
-    context = {'product': prodcut}
-    return render(request, "core/details.html", context)
+class details(DetailView):
+    model = Product
+    template_name = 'core/details.html'
+    context_object_name = 'product'
 
-def newProduct(request):
-    if (request.method == 'GET'):
-        form = ProductForm()
-        return render (request, 'core/new-product.html', {'form': form})
-    form = ProductForm(request.POST)
-    if form.is_valid():
+class newProduct(FormView):
+    template_name = 'core/new-product.html'
+    form_class = ProductForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
+
         product = Product()
         data = form.cleaned_data
         product.name = data['name']
@@ -45,37 +52,30 @@ def newProduct(request):
 
         product.save()
         product.categories.set(data['categories'])
-        return redirect('products')
-    else:
-        return render(request, 'core/new-product.html', {'form': form})
-    
-def newCategory(request):
-    if request.method == 'GET':
-        form = CategoryForm()
-        return render(request, 'core/newcategory.html', {'form': form})
-    
-    form = CategoryForm(request.POST)
-    if form.is_valid():
-        data = form.cleaned_data
+        return redirect(self.success_url)
+
+class newCategory(FormView):
+    template_name = 'core/newcategory.html'
+    form_class = CategoryForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
         category = Category()
+        data = form.cleaned_data
+
         category.name = data['name']
         category.save()
-        return redirect('categoryes')
-    else:
-        return render(request, 'core/newcategory.html', {'form': form})
-    
-def newSupplier(request):
-    if request.method == 'GET':
-        form = SupplierForm()
-        return render(request, 'core/newsupplier.html', {'form': form})
+        return redirect(self.success_url)
 
-    form = SupplierForm(request.POST)
-    if form.is_valid():
-        data = form.cleaned_data
+class newSupplier(FormView):
+    template_name = 'core/newsupplier.html'
+    form_class = SupplierForm
+    success_url = reverse_lazy('index')
+
+    def form_valid(self, form):
         supplier = Supplier()
+        data = form.cleaned_data
         supplier.name = data['name']
         supplier.cnpj = data['cnpj']
         supplier.save()
-        return redirect('supplier')
-    else:
-        return render (request, 'core/newsupplier.html', {'form': form})
+        return redirect(self.success_url)
