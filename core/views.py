@@ -38,6 +38,7 @@ def newProduct(request):
         product.name = data['name']
         product.code = data['code']
         product.description = data['description']
+        product.quantity = data['quantity']
         product.price = data['price']
         product.supplier = data['supplier']
         product.creation_date = datetime.now()
