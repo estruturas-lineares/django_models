@@ -23,14 +23,14 @@
 
     {% if page_obj.has_previous %}
         <a href="?page=1">&laquo; primeira</a>
-        <a href="?page={{page_obj.previous_page_number}}"> anterior </a>
+        <a href="?page={{page_obj.previous_page_number}}"> voltar </a>
     {% endif %}
     <span>
         Pagina {{ page_obj.number }} de {{page_obj.paginator.num_pages }}
     </span>
     {% if page_obj.has_next %}
-        <a href="?page={{page_obj.next_page_number}}">&laquo; primeira</a>
-        <a href="?page={{page_obj.paginator.num_pages}}"> Ultimo &raquo; </a>
+        <a href="?page={{page_obj.next_page_number}}">&laquo; próxima</a>
+        <a href="?page={{page_obj.paginator.num_pages}}"> última &raquo; </a>
     {% endif%}
 </main>
 
