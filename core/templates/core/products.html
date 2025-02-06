@@ -3,10 +3,35 @@
 {% block content %}
 
 <main>
+    <form>
+        <input name = "search" type="text" placeholder = "pesquise" value = "{{ request.GET.search}}"/>
+        
+        <label for="price_min">Preço Mínimo:</label>
+        <input type="number" name="price_min" step="0.01" placeholder="Preço Mínimo" value="{{ request.GET.price_min }}">
+    
+        <label for="price_max">Preço Máximo:</label>
+        <input type="number" name="price_max" step="0.01" placeholder="Preço Máximo" value="{{ request.GET.price_max }}">
+        <button>Pesquisar</button>
+    </form>
     <h1>PRODUTOS</h1>
     {% for product in products %}
-        <h2><a href="{% url 'product-detail' product.pk %}"> {{ product }} </a></h2>
+        <div>
+            <h2><a href="{% url 'product-detail' product.pk %}"> {{ product.name }} </a></h2>
+            <span> R$ {{product.price}}</span>
+        </div>
     {% endfor %}
+
+    {% if page_obj.has_previous %}
+        <a href="?page=1">&laquo; primeira</a>
+        <a href="?page={{page_obj.previous_page_number}}"> anterior </a>
+    {% endif %}
+    <span>
+        Pagina {{ page_obj.number }} de {{page_obj.paginator.num_pages }}
+    </span>
+    {% if page_obj.has_next %}
+        <a href="?page={{page_obj.next_page_number}}">&laquo; primeira</a>
+        <a href="?page={{page_obj.paginator.num_pages}}"> Ultimo &raquo; </a>
+    {% endif%}
 </main>
 
 {% endblock content %}

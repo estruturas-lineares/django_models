@@ -1,4 +1,4 @@
-from django.shortcuts import render, redirect
+from django.shortcuts import redirect
 from django.urls import reverse_lazy
 from .models import Product, Category, Supplier
 from .forms import ProductForm, CategoryForm, SupplierForm
@@ -9,13 +9,35 @@ from django.views.generic import TemplateView, DetailView,ListView, FormView
 class index(TemplateView):
     template_name = 'core/index.html'
 
-class products(TemplateView):
-    template_name = 'core/products.html'
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['products'] = Product.objects.all()
-        return context
+class products(ListView):
+    model = Product
+    template_name = 'core/products.html'
+    context_object_name = 'products'
+    paginate_by = 5
+
+    def get_queryset(self):
+        queryset =  super(products,self).get_queryset()
+        data = self.request.GET
+        search = data.get('search')
+        price_min = data.get('price_min')
+        price_max = data.get('price_max')
+
+        #aplicando lookups de querys
+        # LIKE do sql basicamente
+        if search:
+            queryset = queryset.filter(name__icontains=search) 
+
+        # greater_than
+        if price_min:
+            queryset = queryset.filter(price__gte=price_min)
+
+        # less_than
+        if price_max:
+            queryset = queryset.filter(price__lte=price_max)
+
+
+        return queryset
     
 class categorys(ListView):
     model = Category
